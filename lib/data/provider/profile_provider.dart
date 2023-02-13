@@ -444,4 +444,27 @@ class ProfileProvider{
   }
 
 
+  Future<http.Response> uploadAlumbImage(
+      String accesToken,
+      String userID,
+      String file,
+      String almumId,
+      ) async {
+    var request = http.MultipartRequest('POST', Uri.parse(addAlbumImageUrl));
+    request.fields['userId'] = userID;
+    request.fields['albumId'] = almumId;
+    print(file);
+    print(almumId);
+    var multipartFile =
+    await http.MultipartFile.fromPath("imageUrl", file);
+    request.files.add(multipartFile);
+    request.headers['userId'] = userID;
+    request.headers['token'] = accesToken;
+    http.Response response =
+    await http.Response.fromStream(await request.send());
+    print(response.body);
+    return response;
+  }
+
+
 }

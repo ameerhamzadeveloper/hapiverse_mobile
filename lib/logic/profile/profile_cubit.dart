@@ -19,6 +19,7 @@ import '../../data/model/covid_record_model.dart';
 import '../../data/model/fetch_business_meeting.dart';
 import '../../data/model/fetch_card_model.dart';
 import '../../data/model/fetch_friend_model.dart';
+import '../../data/model/fetch_image_album.dart';
 import '../../data/model/fetch_job_model.dart';
 import '../../data/model/fetch_photo_album.dart';
 import '../../data/model/get_all_my_post_model.dart';
@@ -1030,6 +1031,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   fetchAlbumsImages(String userId,String token,String id){
     repository.callPostApiCI({'userId':userId,'token':token,'albumId':id}, fetchAlbumImagesUrl).then((value){
       print(value.body);
+      var data = fetchAlbumImagesFromJson(value.body);
+      emit(state.copyWith(imageAlbumm: data.data));
       // var da = fetchPhotoAlbumFromJson(value.body);
       // emit(state.copyWith(photAlbumm: da.data));
     });
@@ -1101,6 +1104,42 @@ class ProfileCubit extends Cubit<ProfileState> {
       print("cards ${value.body}");
       var data = cardDataModelFromJson(value.body);
       emit(state.copyWith(cardd: data));
+    });
+  }
+
+
+  addImageToAlbum(String userId,String token,String file,String albumId,BuildContext context){
+    showCupertinoDialog(context: context, barrierDismissible: false,builder: (ctx){
+      return const CupertinoAlertDialog(
+        content: CupertinoActivityIndicator(),
+      );
+    });
+    repository.uploadAlbumImage(token,userId,file,albumId).then((value) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      print("cards ${value.body}");
+    });
+  }
+
+  fetchAlbumImage(String albumId,){
+    repository.callGetApiCi({'albumId':albumId},fetchAlbumImagesUrl).then((value) {
+      print(value.body);
+
+    });
+  }
+
+  addFavMusic(String userId,String token,String musicId,){
+    repository.callPostApiCI({'musicId':musicId,'userId':userId,'token':token,},addFavMusicUrl).then((value) {
+      print(value.body);
+      Fluttertoast.showToast(msg: "Music Added to favorite");
+    });
+  }
+
+  fetchFavMusic(String userId,String token,){
+    repository.callPostApiCI({'userId':userId,'token':token},addFavMusicUrl).then((value) {
+      print(value.body);
+      var data = musicModelFromJson(value.body);
+      emit(state.copyWith(favMusicc: data.tracks));
     });
   }
 

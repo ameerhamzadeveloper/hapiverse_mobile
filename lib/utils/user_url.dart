@@ -23,6 +23,7 @@ const String searchUSersUrl = "${Utils.baseUrl}user/SearchUser";
 const String fetchAlbumUrl = "${Utils.baseUrl}user/FetchAlbum";
 const String addAlbumImageUrl = "${Utils.baseUrl}user/AddAlbumImage";
 const String fetchAlbumImagesUrl = "${Utils.baseUrl}user/FetchAlbumImages";
+const String addFavMusicUrl = "${Utils.baseUrl}user/AddFavMusic";
 const String addAlbumUrl = "${Utils.baseUrl}user/AddAlbum";
 const String feedsPostsUrl = "${Utils.baseUrl}post/FetchFeedPost";
 const String addLikeDislikeUrl = "${Utils.baseUrl}post/LikeAdd";

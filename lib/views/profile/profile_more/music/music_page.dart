@@ -2,6 +2,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:happiverse/logic/register/register_cubit.dart';
 import '../../../../logic/profile/profile_cubit.dart';
 import '../../../../views/components/universal_card.dart';
 import '../../../../views/profile/profile_more/music/play_music.dart';
@@ -42,6 +43,7 @@ class _MusicListPageState extends State<MusicListPage> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ProfileCubit>();
+    final auth = context.read<RegisterCubit>();
     return BlocBuilder<ProfileCubit, ProfileState>(
   builder: (context, state) {
     return Scaffold(
@@ -88,7 +90,9 @@ class _MusicListPageState extends State<MusicListPage> with SingleTickerProvider
                         ),
                         subtitle: Text(m.artists![0].name!),
                         trailing: IconButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            bloc.addFavMusic(auth.userID!, auth.accesToken!, m.id ?? "");
+                          },
                           icon: Icon(LineIcons.heart),
                         ),
                       );

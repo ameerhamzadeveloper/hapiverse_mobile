@@ -39,6 +39,7 @@ class ProfileState {
   double businessRatingValue;
   String? businessRatingFeedBack;
   List<Track>? musicTrack;
+  List<Track>? favMusic;
   AudioPlayer? audioPlayer;
   Duration progress;
   bool isPlaying = true;
@@ -46,6 +47,7 @@ class ProfileState {
   String musicImage;
   String musicUrl;
   Duration musicLength;
+  List<ImageAlbum>? imageAlbum;
   List<LocationShareToOther>? locationshareToOthers;
   String musicArtist;
   int? musicIndex;
@@ -134,6 +136,8 @@ class ProfileState {
   List<LocationShareToOther>? locationshareToMe;
   List<PhotoAlbum>? photAlbum;
   ProfileState({
+    this.imageAlbum,
+    this.favMusic,
     this.card,
     this.photAlbum,
     this.locationshareToMe,
@@ -297,6 +301,7 @@ class ProfileState {
     double? businessRatingValuee,
     String? businessRatingFeedBackk,
     List<Track>? musicTrackk,
+    List<Track>? favMusicc,
     AudioPlayer? audioPlayerr,
     Duration? progresss,
     bool? isPlayingg,
@@ -391,6 +396,7 @@ class ProfileState {
     List<UserInterestProfile>? userInterestt,
     List<PhotoAlbum>? photAlbumm,
     CardDataModel? cardd,
+    List<ImageAlbum>? imageAlbumm,
   }){
     return ProfileState(
        hobby: hobbyy ?? hobby,
@@ -519,7 +525,9 @@ class ProfileState {
       userInterest: userInterestt ?? userInterest,
       jobs: jobss ?? jobs,
       photAlbum: photAlbumm ?? photAlbum,
-      card: cardd ?? card
+      card: cardd ?? card,
+      imageAlbum: imageAlbumm ?? imageAlbum,
+      favMusic: favMusicc ?? favMusic
     );
 }
 

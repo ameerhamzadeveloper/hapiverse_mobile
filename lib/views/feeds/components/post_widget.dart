@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:speech_bubble/speech_bubble.dart';
 import '../../../data/model/feeds_post_model.dart';
 import '../../../logic/feeds/feeds_cubit.dart';
 import '../../../logic/register/register_cubit.dart';
@@ -511,7 +512,7 @@ class _PostWidgetState extends State<PostWidget> {
                       }
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(widget.iamge.length, (index) => Padding(
@@ -526,27 +527,76 @@ class _PostWidgetState extends State<PostWidget> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 12,
                 children: widget.iamge.map((e){
-                  return InkWell(
-                    onTap: (){
-                      nextScreen(context, SeeProfileImage(imageUrl: "${Utils.baseImageUrl}${e.postFileUrl}",title: widget.profileName,));
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(15),
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: (){
+                          nextScreen(context, SeeProfileImage(imageUrl: "${Utils.baseImageUrl}${e.postFileUrl}",title: widget.profileName,));
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15),
+                            ),
+                          ),
+                          child: ClipRRect(
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(15)),
+                              child: CachedNetworkImage(
+                                  // fadeInDuration: Duration(seconds: 1),
+                                  // placeholder: (s,sf)=>Container(color: Colors.grey,height: getHeight(context) / 4,width: double.infinity,),
+                                  // imageErrorBuilder: (context, error, stackTrace) => Container(color: Colors.grey,),
+                                  imageUrl: "${Utils.baseImageUrl}${e.postFileUrl}")
+                          ),
                         ),
                       ),
-                      child: ClipRRect(
-                          borderRadius: const BorderRadius.all(
-                              Radius.circular(15)),
-                          child: CachedNetworkImage(
-                              // fadeInDuration: Duration(seconds: 1),
-                              // placeholder: (s,sf)=>Container(color: Colors.grey,height: getHeight(context) / 4,width: double.infinity,),
-                              // imageErrorBuilder: (context, error, stackTrace) => Container(color: Colors.grey,),
-                              imageUrl: "${Utils.baseImageUrl}${e.postFileUrl}")
+                       Align(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap:(){
+                            print(widget.profilePic);
+                            showModalBottomSheet(context: context, builder: (context){
+                              return Container(
+                                color: Colors.white,
+                                height: getHeight(context) / 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 10,),
+                                      Row(
+                                        children: [
+                                          Text("Face Detected Found"),
+                                        ],
+                                      ),
+                                      Divider(),
+                                      ListTile(
+                                        title: Text(widget.profileName),
+                                        leading: CircleAvatar(
+                                          backgroundImage: NetworkImage(widget.profilePic),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              );
+                            });
+                          },
+                          child: SpeechBubble(
+                            color: kUniversalColor,
+                            nipLocation: NipLocation.LEFT,
+                            child: Text(
+                              "${widget.profileName}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   );
                 }).toList(),
               ),

@@ -170,8 +170,19 @@ class PostCubit extends Cubit<PostState> {
   Future<void> pickImages(int source) async {
     // List<String> images = [];
     var cameraPermission = await Permission.camera.status;
-    if(cameraPermission == PermissionStatus.denied){
-      openAppSettings();
+    if(source == 1){
+      if(cameraPermission == PermissionStatus.denied){
+        print(cameraPermission);
+        openAppSettings();
+      }else{
+        XFile? result = await ImagePicker().pickImage(source: source == 1 ? ImageSource.camera :ImageSource.gallery);
+        images.add(result!.path);
+        baseImage = await result.readAsBytes();
+        print(images[0]);
+        emit(state.copyWith(
+            imagese: images, textControllerr: TextEditingController()));
+        emit(state.copyWith(showImagess: images, showTextt: "",showVideoo: false));
+      }
     }else{
       XFile? result = await ImagePicker().pickImage(source: source == 1 ? ImageSource.camera :ImageSource.gallery);
       images.add(result!.path);

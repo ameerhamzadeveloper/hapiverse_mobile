@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:happiverse/utils/constants.dart';
+import 'package:happiverse/utils/utils.dart';
+import 'package:happiverse/views/profile/photo_album/add_image_in_album.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../logic/profile/profile_cubit.dart';
 import '../../../utils/config/assets_config.dart';
 import '../../../views/profile/photo_album/images_albumbs.dart';
@@ -16,13 +20,22 @@ class _PageViewPhotoState extends State<PageViewPhoto> {
   var currentPageValue = 0.0;
   int pos = 0;
 
+  Future<String> getImage(int offset,BuildContext context)async{
+    XFile? im = await ImagePicker().pickImage(source: offset == 1 ? ImageSource.camera : ImageSource.gallery);
+
+    if(im != null){
+      nextScreen(context, AddImageInAlbum(id: widget.id,file: im.path,));
+    }
+    return im!.path;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     final pro = context.read<ProfileCubit>();
     final authB = context.read<RegisterCubit>();
-    pro.fetchAlbums(authB.userID!, authB.accesToken!);
+    pro.fetchAlbumsImages(authB.userID!, authB.accesToken!,widget.id);
   }
   @override
   void dispose() {
@@ -32,27 +45,16 @@ class _PageViewPhotoState extends State<PageViewPhoto> {
   }
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+  builder: (context, state) {
     return Scaffold(
-      body: Stack(
+      body: state.imageAlbum == null ? Center(child: CircularProgressIndicator(),): Stack(
         children: [
           PageView.builder(
-            itemCount: 6,
+            itemCount: state.imageAlbum!.length,
             itemBuilder: (ctx,position){
-              print(position);
-                pos = position;
-              if(position == 0){
-                return Image.network(AssetConfig.demoNetworkImage);
-              }else if(position == 1){
-                return Image.network("https://www.idownloadblog.com/wp-content/uploads/2020/10/Resonance_Blue_Dark-428w-926h@3xiphone.png");
-              }else if(position == 2){
-                return Image.network("https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80");
-              }else if(position == 3){
-                return Image.network("https://media.istockphoto.com/photos/mountain-landscape-picture-id517188688?k=20&m=517188688&s=612x612&w=0&h=i38qBm2P-6V4vZVEaMy_TaTEaoCMkYhvLCysE7yJQ5Q=");
-              }else if(position == 4){
-                return Image.network("https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80");
-              }else{
-                return Image.network("https://media.istockphoto.com/photos/pakistan-monument-islamabad-picture-id535695503?k=20&m=535695503&s=612x612&w=0&h=S16wHXc-b3AkL7YMrcFkR2pDGFJA1bRsPmAfQlfrwkc=");
-              }
+              var d = state.imageAlbum![position];
+              return Image.network("${Utils.baseImageUrl}${d.imageUrl}");
             },
           ),
           Align(
@@ -65,17 +67,71 @@ class _PageViewPhotoState extends State<PageViewPhoto> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: pos == 0 ? Border.all() : Border.all(width: 0)
+                    children:List.generate(state.imageAlbum!.length, (index){
+                      return Image.network("${Utils.baseImageUrl}${state.imageAlbum![index].imageUrl}");
+                    }),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: (){
+                  showModalBottomSheet(context: context, builder: (ctx){
+                    return Container(
+                      height: 150,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap:()async{
+                                getImage(1,context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  // color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: Center(child: Text("Camera",style: TextStyle(color: Colors.blue),)),
+                              ),
+                            ),
+                            Divider(),
+                            InkWell(
+                              onTap:()async{
+                                getImage(2,context);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  // color: Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: Center(child: Text("Gallery",style: TextStyle(color: Colors.blue))),
+                              ),
+                            ),
+                          ],
                         ),
-                          child: Image.network(AssetConfig.demoNetworkImage,height: 50,width: 50,fit: BoxFit.cover,)),
-                      Image.network("https://www.idownloadblog.com/wp-content/uploads/2020/10/Resonance_Blue_Dark-428w-926h@3xiphone.png",height: 50,width: 50,fit: BoxFit.cover,),
-                      Image.network("https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80",height: 50,width: 50,fit: BoxFit.cover,),
-                      Image.network("https://media.istockphoto.com/photos/mountain-landscape-picture-id517188688?k=20&m=517188688&s=612x612&w=0&h=i38qBm2P-6V4vZVEaMy_TaTEaoCMkYhvLCysE7yJQ5Q=",height: 50,width: 50,fit: BoxFit.cover,),
-                      Image.network("https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8bWFufGVufDB8fDB8fA%3D%3D&w=1000&q=80",height: 50,width: 50,fit: BoxFit.cover,),
-                      Image.network("https://media.istockphoto.com/photos/pakistan-monument-islamabad-picture-id535695503?k=20&m=535695503&s=612x612&w=0&h=S16wHXc-b3AkL7YMrcFkR2pDGFJA1bRsPmAfQlfrwkc=",height: 50,width: 50,fit: BoxFit.cover,),
+                      ),
+                    );
+                  });
+                  // nextScreen(context, AddImageInAlbum(id:widget.id));
+                },
+                child: SizedBox(
+                  width: 100,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text("Add Image"),
+                      Icon(Icons.add,color: Colors.black,)
                     ],
                   ),
                 ),
@@ -90,9 +146,12 @@ class _PageViewPhotoState extends State<PageViewPhoto> {
                 icon: Icon(Icons.clear,color: Colors.black,),
               ),
             ),
-          )
+          ),
+
         ],
       ),
     );
+  },
+);
   }
 }

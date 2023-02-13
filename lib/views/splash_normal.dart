@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_callkit_incoming/flutter_callkit_incoming.dart';
+import 'package:happiverse/services/face_detected.dart';
+import 'package:happiverse/services/ml_service.dart';
 import 'package:happiverse/views/places.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/config/assets_config.dart';
@@ -27,6 +29,13 @@ class _SplashNormalPageState extends State<SplashNormalPage> {
   late SharedPreferences pre;
   bool isCalled = false;
   var callId = '';
+  // MLService _mlService = MLService();
+  // FaceDetectorService _mlKitService = FaceDetectorService();
+
+  init(){
+    // _mlKitService.initialize();
+    // _mlService.initialize();
+  }
   getCurrentCall() async {
 
     var calls = await FlutterCallkitIncoming.activeCalls();
@@ -212,6 +221,7 @@ class _SplashNormalPageState extends State<SplashNormalPage> {
     final callCubit = context.read<AgoraVideoCallCubit>();
     bloc.getLocation();
     bloc.intiShared();
+    init();
     Future.delayed(const Duration(seconds: 2), () {
       bloc.getFromShared();
           if (bloc.userID != null) {

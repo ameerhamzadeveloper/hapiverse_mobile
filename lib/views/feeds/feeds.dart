@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:happiverse/views/test_image.dart';
 import '../../logic/feeds/feeds_cubit.dart';
 import '../../logic/post_cubit/post_cubit.dart';
 import '../../logic/profile/profile_cubit.dart';
@@ -399,7 +400,7 @@ class _FeedsPageState extends State<FeedsPage> {
                     else{
                       return Container();
                     }
-                }
+                   }
                   },
                 itemCount: state.feedsPost!.length,
               ),
@@ -409,6 +410,7 @@ class _FeedsPageState extends State<FeedsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // nextScreen(context, TestFaceReco());
           if(profileState.profileName != null || profileState.businessProfile!.businessName != null){
             nextScreen(context, AddPostPage(isFromGroup: false,isBusiness: authB.isBusinessShared! ? true:false,));
           }else{

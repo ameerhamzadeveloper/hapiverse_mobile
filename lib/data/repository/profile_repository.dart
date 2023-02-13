@@ -155,5 +155,10 @@ class ProfileRepository{
     return response;
   }
 
+  Future<http.Response> uploadAlbumImage(String token,String userId,String file,String id)async{
+    Future<http.Response> response = provider.uploadAlumbImage(token,userId,file,id);
+    return response;
+  }
+
 
 }

@@ -30,7 +30,7 @@ class _MusicPageState extends State<MusicPage> {
             _currentIndex = va;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(LineIcons.music),label: "Music"),
           BottomNavigationBarItem(icon: Icon(LineIcons.heart),label: "Favorites"),
         ],
