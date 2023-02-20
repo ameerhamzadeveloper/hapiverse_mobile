@@ -37,7 +37,7 @@ class _DemoLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) {
-    return ['zh','en','ar','ur','hi','es']
+    return ['zh','en','ar','ur','hi','es','fr','ru','tl']
         .contains(locale.languageCode);
   }
 

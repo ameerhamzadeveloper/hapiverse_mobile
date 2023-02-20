@@ -129,7 +129,7 @@ class _PlayMusicState extends State<PlayMusic> with SingleTickerProviderStateMix
                       onPressed: (){},
                       icon: Icon(LineIcons.heart,color: Colors.white,),
                     ),
-                    Text("Favourite",style: TextStyle(color: Colors.white),)
+                    Text("Favorite",style: TextStyle(color: Colors.white),)
                   ],
                 ),
                 SizedBox(width: 10,),

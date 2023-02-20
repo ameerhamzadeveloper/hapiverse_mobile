@@ -15,6 +15,7 @@ class ProfileState {
   String? following;
   String? dateOfBirth;
   String? phoneNo;
+  List<PlacesOur>? places;
   List<String> genderList;
   List<String> relationDropList;
   Response? otherProfileInfoResponse;
@@ -105,6 +106,7 @@ class ProfileState {
   bool closedAllDaySaturday;
   bool closedAllDaySunday;
   List<Job>? jobs;
+  List<Widget>? addPlaceImagesWidget;
   Set<Marker>? businessLocationMArker = {};
   static late double currentLat = 24.401716;
   static late double currentLng = 67.822508;
@@ -135,8 +137,12 @@ class ProfileState {
   List<UserInterestProfile>? userInterest;
   List<LocationShareToOther>? locationshareToMe;
   List<PhotoAlbum>? photAlbum;
+  List<File>? addPlaceImages;
+  CoinsModel? usersCoins;
+
   ProfileState({
     this.imageAlbum,
+    this.usersCoins,
     this.favMusic,
     this.card,
     this.photAlbum,
@@ -264,7 +270,10 @@ class ProfileState {
     this.badge,
     this.hasVerified,
     this.locationshareToOthers,
-    this.userInterest
+    this.userInterest,
+    this.addPlaceImagesWidget,
+    this.addPlaceImages,
+    this.places
 });
 
   ProfileState copyWith({
@@ -397,6 +406,10 @@ class ProfileState {
     List<PhotoAlbum>? photAlbumm,
     CardDataModel? cardd,
     List<ImageAlbum>? imageAlbumm,
+    List<Widget>? addPlaceImagesWidgett,
+    List<File>? addPlaceImagess,
+    List<PlacesOur>? placess,
+    CoinsModel? usersCoinss,
   }){
     return ProfileState(
        hobby: hobbyy ?? hobby,
@@ -527,7 +540,11 @@ class ProfileState {
       photAlbum: photAlbumm ?? photAlbum,
       card: cardd ?? card,
       imageAlbum: imageAlbumm ?? imageAlbum,
-      favMusic: favMusicc ?? favMusic
+      favMusic: favMusicc ?? favMusic,
+      addPlaceImagesWidget: addPlaceImagesWidgett ?? addPlaceImagesWidget,
+      addPlaceImages: addPlaceImagess ?? addPlaceImages,
+      places: placess ?? places,
+      usersCoins: usersCoinss ?? usersCoins,
     );
 }
 

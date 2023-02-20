@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:happiverse/views/profile/coins.dart';
 import '../../logic/profile/profile_cubit.dart';
 import '../../logic/register/register_cubit.dart';
 import '../../utils/constants.dart';
@@ -39,6 +40,12 @@ class _MyProfileState extends State<MyProfile> {
       builder: (context,state) {
         return Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(LineIcons.coins),
+              onPressed: (){
+                nextScreen(context, CoinsPAge());
+              },
+            ),
             title: Text(getTranslated(context, 'PROFILE')!),
             actions: [
               IconButton(

@@ -992,4 +992,15 @@ class BusinessProductCubit extends Cubit<BusinessProductState> {
     });
   }
 
+  addReward(String coins,String giveID,String userId,String token){
+    repository.callPostApiCI({'coin':coins,'userIdd':giveID,'businessId':userId,'token':token,'userId':userId}, addCoinUrl).then((value) {
+      print(value.body);
+      var de = json.decode(value.body);
+      if(de['message'] == "Data successfuly save"){
+        Fluttertoast.showToast(msg: "Coins Sent Successfully");
+      }else{
+        Fluttertoast.showToast(msg: "Something went wrong try again");
+      }
+    });
+  }
 }

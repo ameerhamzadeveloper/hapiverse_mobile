@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:happiverse/views/business_tools/events/events.dart';
+import 'package:happiverse/views/profile/profile_more/movie_webview.dart';
 import 'package:happiverse/views/profile/profile_more/orders_page.dart';
 import 'package:happiverse/views/profile/profile_more/translator.dart';
 import 'package:translator/translator.dart';
@@ -105,7 +106,8 @@ class _ProfileMoreState extends State<ProfileMore> {
                   ],
                 ):Container(),
                 authB.planID == 5 || authB.planID == 6 ? Container():ListTile(
-                  onTap: ()=>nextScreen(context, MoviesPage()),
+                  // onTap: ()=>nextScreen(context, MoviesPage()),
+                  onTap: ()=> nextScreen(context, MovieWebview()),
                   title: Text("Movies"),
                   leading: Icon(LineIcons.film),
                   trailing: Icon(Icons.arrow_forward_ios),
@@ -131,7 +133,7 @@ class _ProfileMoreState extends State<ProfileMore> {
                 Divider(),
                 ListTile(
                   onTap: ()=>nextScreen(context, CalenderPage()),
-                  title: Text("Calender"),
+                  title: Text("Calendar"),
                   leading: Icon(LineIcons.calendar),
                   trailing: Icon(Icons.arrow_forward_ios),
                 ),

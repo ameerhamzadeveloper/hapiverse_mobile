@@ -1,20 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:happiverse/logic/profile/profile_cubit.dart';
 import 'package:happiverse/views/profile/settings/about_hapiverse.dart';
 import '../../../logic/register/register_cubit.dart';
 import '../../../routes/routes_names.dart';
 import '../../../utils/config/assets_config.dart';
 import '../../../utils/constants.dart';
-import '../../../views/components/universal_card.dart';
 import '../../../views/profile/settings/components/setting_widget.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class ProfileSettings extends StatefulWidget {
   final bool isBusiness;
   const ProfileSettings({Key? key,required this.isBusiness}) : super(key: key);
-
   @override
   _ProfileSettingsState createState() => _ProfileSettingsState();
 }
@@ -122,7 +120,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         ],
                       ),
                       const SizedBox(height: 10,),
-                      Text("Hapiverse${getTranslated(context, 'ABOUT')!}"),
+                      Text("Hapiverse ${getTranslated(context, 'ABOUT')!}"),
                       Text(getTranslated(context, 'HAPIVERSE_IS_A_UNIVERSAL')!,style: const TextStyle(fontSize: 12,color: Colors.grey),)
                     ],
                   ),

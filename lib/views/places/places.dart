@@ -5,6 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:happiverse/logic/profile/profile_cubit.dart';
+import 'package:happiverse/logic/register/register_cubit.dart';
+import 'package:happiverse/utils/utils.dart';
+import 'package:happiverse/views/places/add_places.dart';
 import '../../../logic/places/places_cubit.dart';
 import '../../../routes/routes_names.dart';
 import '../../../utils/constants.dart';
@@ -34,8 +38,17 @@ class _PlacesPageState extends State<PlacesPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+  builder: (context, profState) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 100,
+        leading: TextButton(
+          onPressed: (){
+            nextScreen(context, AddPlaces());
+          },
+          child: Text("Add Place",style: TextStyle(color: Colors.white),),
+        ),
         title: const Text("Places"),
         actions: [
           IconButton(
@@ -67,230 +80,390 @@ class _PlacesPageState extends State<PlacesPage> {
                     ? const Center(
                   child: CupertinoActivityIndicator(),
                 )
-                    : ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: state.nearBySearch!.results!.length,
-                        itemBuilder: (ctx, index) {
-                          // print("photo: ${state.nearBySearch!.results![index].photos![0].photoReference!}");
-                          return InkWell(
-                            onTap: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => PlacesDetails(
-                                        nearBySearch: state.nearBySearch!.results![index], currentLat: state.currentLat, currentLng: state.currentLng,)));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                top:8.0,
-                                left:8.0,
-                                right:8.0,
-                              ),
-                              child: Card(
-                                child: Container(
-                                  height: 90,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          // Image.network(
-                                          //   state.nearBySearch?.results?[index].photos != null ? "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${state.nearBySearch?.results?[index].photos?[0].photoReference}&key=AIzaSyAC9Fob5Fk3b_MBXiV4kITtLsI5Qqr1Tv4" : "https://source.unsplash.com/user/c_v_r/320x480",
-                                          //   width: 100,
-                                          //   height: 100,
-                                          //   fit: BoxFit.contain,
-                                          // ),
-                                          Container(
-                                            width: 120,
-                                            height: 80,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                    fit: BoxFit.fill,
-                                                    image: NetworkImage(
-                                                      "https://source.unsplash.com/user/c_v_r/320x480",
-                                                    ))),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                    : Column(
+                      children: [
+                        profState.places == null ? Center():
+                            ListView.builder(
+                              shrinkWrap:true,
+                              itemBuilder: (c,i){
+                                var d = profState.places![i];
+                                return InkWell(
+                                  onTap: (){
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (_) => PlacesDetails(
+                                    //           nearBySearch: state.nearBySearch!.results![index], currentLat: state.currentLat, currentLng: state.currentLng,)));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top:8.0,
+                                      left:8.0,
+                                      right:8.0,
+                                    ),
+                                    child: Card(
+                                      child: Container(
+                                        height: 90,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
                                               children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                            state.nearBySearch!
-                                                .results![index].name!
-                                                .toString().length > 30?
-                                                        state.nearBySearch!
-                                                            .results![index].name!
-                                                            .toString().substring(0,30):state.nearBySearch!
-                                                .results![index].name!
-                                                .toString(),
-                                                        style: GoogleFonts.lato(
-                                                            color: kUniversalColor,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 13)),
-                                                  ],
+                                                // Image.network(
+                                                //   state.nearBySearch?.results?[index].photos != null ? "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${state.nearBySearch?.results?[index].photos?[0].photoReference}&key=AIzaSyAC9Fob5Fk3b_MBXiV4kITtLsI5Qqr1Tv4" : "https://source.unsplash.com/user/c_v_r/320x480",
+                                                //   width: 100,
+                                                //   height: 100,
+                                                //   fit: BoxFit.contain,
+                                                // ),
+                                                Container(
+                                                  width: 120,
+                                                  height: 80,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius.circular(10),
+                                                      image: DecorationImage(
+                                                          fit: BoxFit.fill,
+                                                          image: NetworkImage(
+                                                            "${Utils.baseImageUrl}${d.images[0].imageUrl}",
+                                                          ))),
                                                 ),
                                                 SizedBox(
-                                                  height: 5,
+                                                  width: 10,
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                        "${state.nearBySearch!.results![index].rating!}",
-                                                        style: GoogleFonts.lato(
-                                                            color:
-                                                                kUniversalColor,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 13)),
-                                                    RatingBarIndicator(
-                                                      rating: double.parse(state
-                                                          .nearBySearch!
-                                                          .results![index]
-                                                          .rating!
-                                                          .toString()),
-                                                      itemBuilder:
-                                                          (context, index) =>
-                                                              Icon(
-                                                        Icons.star,
-                                                        color: Colors.amber,
+                                                Padding(
+                                                  padding: const EdgeInsets.all(4.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                              d.placeName,
+                                                              style: GoogleFonts.lato(
+                                                                  color: kUniversalColor,
+                                                                  fontWeight:
+                                                                  FontWeight.w400,
+                                                                  fontSize: 13)),
+                                                        ],
                                                       ),
-                                                      itemCount: 5,
-                                                      itemSize: 15.0,
-                                                      direction:
-                                                          Axis.horizontal,
-                                                    ),
-                                                    Text(
-                                                        "(${state.nearBySearch!.results![index].userRatingsTotal!})",
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text(
+                                                      //         "${state.nearBySearch!.results![index].rating!}",
+                                                      //         style: GoogleFonts.lato(
+                                                      //             color:
+                                                      //             kUniversalColor,
+                                                      //             fontWeight:
+                                                      //             FontWeight.w400,
+                                                      //             fontSize: 13)),
+                                                      //     RatingBarIndicator(
+                                                      //       rating: double.parse(state
+                                                      //           .nearBySearch!
+                                                      //           .results![index]
+                                                      //           .rating!
+                                                      //           .toString()),
+                                                      //       itemBuilder:
+                                                      //           (context, index) =>
+                                                      //           Icon(
+                                                      //             Icons.star,
+                                                      //             color: Colors.amber,
+                                                      //           ),
+                                                      //       itemCount: 5,
+                                                      //       itemSize: 15.0,
+                                                      //       direction:
+                                                      //       Axis.horizontal,
+                                                      //     ),
+                                                      //     Text(
+                                                      //         "(${state.nearBySearch!.results![index].userRatingsTotal!})",
+                                                      //         style: GoogleFonts.lato(
+                                                      //             color: kTextGrey,
+                                                      //             fontWeight:
+                                                      //             FontWeight.w400,
+                                                      //             fontSize: 13)),
+                                                      //   ],
+                                                      // ),
+                                                      SizedBox(
+                                                        height: 3,
+                                                      ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text(
+                                                      //         "${calculateDistance(currentLat, currentLng, state.nearBySearch!.results![index].geometry!.location!.lat, state.nearBySearch!.results![index].geometry!.location!.lng).roundToDouble()} km",
+                                                      //         style: GoogleFonts.lato(
+                                                      //             color: kTextGrey,
+                                                      //             fontWeight:
+                                                      //             FontWeight.w400,
+                                                      //             fontSize: 10)),
+                                                      //     SizedBox(
+                                                      //       width: 10,
+                                                      //     ),
+                                                      //     Text(
+                                                      //         "${state.nearBySearch!.results![index].openingHours != null ? "• Open now" : "• Closed"}",
+                                                      //         style: GoogleFonts.lato(
+                                                      //             color: Colors.black,
+                                                      //             fontWeight:
+                                                      //             FontWeight.bold,
+                                                      //             fontSize: 12)),
+                                                      //   ],
+                                                      // ),
+                                                      // SizedBox(height: 3,),
+                                                      Text(
+                                                        d.address,
                                                         style: GoogleFonts.lato(
                                                             color: kTextGrey,
                                                             fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 13)),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 3,
-                                                ),
-                                                Row(
+                                                            FontWeight.w400,
+                                                            fontSize: 10),
+                                                        overflow:
+                                                        TextOverflow.ellipsis,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: profState.places!.length,
+                            ),
+                        ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: state.nearBySearch!.results!.length,
+                            itemBuilder: (ctx, index) {
+                              // print("photo: ${state.nearBySearch!.results![index].photos![0].photoReference!}");
+                              return InkWell(
+                                onTap: (){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => PlacesDetails(
+                                            nearBySearch: state.nearBySearch!.results![index], currentLat: state.currentLat, currentLng: state.currentLng,)));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top:8.0,
+                                    left:8.0,
+                                    right:8.0,
+                                  ),
+                                  child: Card(
+                                    child: Container(
+                                      height: 90,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              // Image.network(
+                                              //   state.nearBySearch?.results?[index].photos != null ? "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${state.nearBySearch?.results?[index].photos?[0].photoReference}&key=AIzaSyAC9Fob5Fk3b_MBXiV4kITtLsI5Qqr1Tv4" : "https://source.unsplash.com/user/c_v_r/320x480",
+                                              //   width: 100,
+                                              //   height: 100,
+                                              //   fit: BoxFit.contain,
+                                              // ),
+                                              Container(
+                                                width: 120,
+                                                height: 80,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(10),
+                                                    image: DecorationImage(
+                                                        fit: BoxFit.fill,
+                                                        image: NetworkImage(
+                                                          "https://source.unsplash.com/user/c_v_r/320x480",
+                                                        ))),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                        "${calculateDistance(currentLat, currentLng, state.nearBySearch!.results![index].geometry!.location!.lat, state.nearBySearch!.results![index].geometry!.location!.lng).roundToDouble()} km",
-                                                        style: GoogleFonts.lato(
-                                                            color: kTextGrey,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 10)),
-                                                    SizedBox(
-                                                      width: 10,
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                state.nearBySearch!
+                                                    .results![index].name!
+                                                    .toString().length > 30?
+                                                            state.nearBySearch!
+                                                                .results![index].name!
+                                                                .toString().substring(0,30):state.nearBySearch!
+                                                    .results![index].name!
+                                                    .toString(),
+                                                            style: GoogleFonts.lato(
+                                                                color: kUniversalColor,
+                                                                fontWeight:
+                                                                    FontWeight.w400,
+                                                                fontSize: 13)),
+                                                      ],
                                                     ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                            "${state.nearBySearch!.results![index].rating!}",
+                                                            style: GoogleFonts.lato(
+                                                                color:
+                                                                    kUniversalColor,
+                                                                fontWeight:
+                                                                    FontWeight.w400,
+                                                                fontSize: 13)),
+                                                        RatingBarIndicator(
+                                                          rating: double.parse(state
+                                                              .nearBySearch!
+                                                              .results![index]
+                                                              .rating!
+                                                              .toString()),
+                                                          itemBuilder:
+                                                              (context, index) =>
+                                                                  Icon(
+                                                            Icons.star,
+                                                            color: Colors.amber,
+                                                          ),
+                                                          itemCount: 5,
+                                                          itemSize: 15.0,
+                                                          direction:
+                                                              Axis.horizontal,
+                                                        ),
+                                                        Text(
+                                                            "(${state.nearBySearch!.results![index].userRatingsTotal!})",
+                                                            style: GoogleFonts.lato(
+                                                                color: kTextGrey,
+                                                                fontWeight:
+                                                                    FontWeight.w400,
+                                                                fontSize: 13)),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 3,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                            "${calculateDistance(currentLat, currentLng, state.nearBySearch!.results![index].geometry!.location!.lat, state.nearBySearch!.results![index].geometry!.location!.lng).roundToDouble()} km",
+                                                            style: GoogleFonts.lato(
+                                                                color: kTextGrey,
+                                                                fontWeight:
+                                                                    FontWeight.w400,
+                                                                fontSize: 10)),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                            "${state.nearBySearch!.results![index].openingHours != null ? "• Open now" : "• Closed"}",
+                                                            style: GoogleFonts.lato(
+                                                                color: Colors.black,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                                fontSize: 12)),
+                                                      ],
+                                                    ),
+                                                    // SizedBox(height: 3,),
                                                     Text(
-                                                        "${state.nearBySearch!.results![index].openingHours != null ? "• Open now" : "• Closed"}",
-                                                        style: GoogleFonts.lato(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 12)),
-                                                  ],
-                                                ),
-                                                // SizedBox(height: 3,),
-                                                Text(
-                                                  state
+                                                      state
+                                                                  .nearBySearch!
+                                                                  .results![index]
+                                                                  .vicinity!
+                                                                  .toString()
+                                                                  .length >
+                                                              35
+                                                          ? "${state.nearBySearch!.results![index].vicinity!.toString().substring(0, 35)}..."
+                                                          : state
                                                               .nearBySearch!
                                                               .results![index]
                                                               .vicinity!
-                                                              .toString()
-                                                              .length >
-                                                          35
-                                                      ? "${state.nearBySearch!.results![index].vicinity!.toString().substring(0, 35)}..."
-                                                      : state
-                                                          .nearBySearch!
-                                                          .results![index]
-                                                          .vicinity!
-                                                          .toString(),
-                                                  style: GoogleFonts.lato(
-                                                      color: kTextGrey,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: 10),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                              .toString(),
+                                                      style: GoogleFonts.lato(
+                                                          color: kTextGrey,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 10),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    // Container(
+                                                    //     child: ClipRRect(
+                                                    //         borderRadius:
+                                                    //             BorderRadius.only(
+                                                    //                 bottomLeft: Radius
+                                                    //                     .circular(
+                                                    //                         20),
+                                                    //                 bottomRight:
+                                                    //                     Radius
+                                                    //                         .circular(
+                                                    //                             20),
+                                                    //                 topLeft: Radius
+                                                    //                     .circular(
+                                                    //                         20),
+                                                    //                 topRight: Radius
+                                                    //                     .circular(
+                                                    //                         20)),
+                                                    //         child: Container(
+                                                    //           width: 60,
+                                                    //           color: Colors
+                                                    //               .yellow.shade500,
+                                                    //           child: Row(
+                                                    //             mainAxisAlignment:
+                                                    //                 MainAxisAlignment
+                                                    //                     .spaceEvenly,
+                                                    //             children: [
+                                                    //               SizedBox(
+                                                    //                 height: 20,
+                                                    //                 width: 10,
+                                                    //               ),
+                                                    //               Text(
+                                                    //                 "${state.nearBySearch!.results![index].rating!}",
+                                                    //                 style: GoogleFonts.lato(
+                                                    //                     color: Colors
+                                                    //                         .white,
+                                                    //                     fontWeight:
+                                                    //                         FontWeight
+                                                    //                             .bold,
+                                                    //                     fontSize:
+                                                    //                         13),
+                                                    //               ),
+                                                    //               Icon(
+                                                    //                 Icons
+                                                    //                     .arrow_drop_down,
+                                                    //                 color: Colors
+                                                    //                     .white,
+                                                    //               ),
+                                                    //             ],
+                                                    //           ),
+                                                    //         ),),),
+                                                  ],
                                                 ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                // Container(
-                                                //     child: ClipRRect(
-                                                //         borderRadius:
-                                                //             BorderRadius.only(
-                                                //                 bottomLeft: Radius
-                                                //                     .circular(
-                                                //                         20),
-                                                //                 bottomRight:
-                                                //                     Radius
-                                                //                         .circular(
-                                                //                             20),
-                                                //                 topLeft: Radius
-                                                //                     .circular(
-                                                //                         20),
-                                                //                 topRight: Radius
-                                                //                     .circular(
-                                                //                         20)),
-                                                //         child: Container(
-                                                //           width: 60,
-                                                //           color: Colors
-                                                //               .yellow.shade500,
-                                                //           child: Row(
-                                                //             mainAxisAlignment:
-                                                //                 MainAxisAlignment
-                                                //                     .spaceEvenly,
-                                                //             children: [
-                                                //               SizedBox(
-                                                //                 height: 20,
-                                                //                 width: 10,
-                                                //               ),
-                                                //               Text(
-                                                //                 "${state.nearBySearch!.results![index].rating!}",
-                                                //                 style: GoogleFonts.lato(
-                                                //                     color: Colors
-                                                //                         .white,
-                                                //                     fontWeight:
-                                                //                         FontWeight
-                                                //                             .bold,
-                                                //                     fontSize:
-                                                //                         13),
-                                                //               ),
-                                                //               Icon(
-                                                //                 Icons
-                                                //                     .arrow_drop_down,
-                                                //                 color: Colors
-                                                //                     .white,
-                                                //               ),
-                                                //             ],
-                                                //           ),
-                                                //         ),),),
-                                              ],
-                                            ),
-                                          )
+                                              )
+                                            ],
+                                          ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          );
-                        });
+                              );
+                            }),
+                      ],
+                    );
 
                 Container(
                   child: Text(
@@ -302,6 +475,8 @@ class _PlacesPageState extends State<PlacesPage> {
         ),
       ),
     );
+  },
+);
   }
 
   getNearByPlaces() async {
@@ -320,6 +495,9 @@ class _PlacesPageState extends State<PlacesPage> {
   @override
   void initState() {
     super.initState();
+    final pro = context.read<ProfileCubit>();
+    final authPro = context.read<RegisterCubit>();
+    pro.fetchPlace(authPro.userID!, authPro.accesToken!);
     Geolocator.requestPermission();
     Geolocator.getCurrentPosition().then((position) {
       print("01 lat: ${position.latitude}, lng: ${position.longitude}");

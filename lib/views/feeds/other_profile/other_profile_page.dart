@@ -200,7 +200,7 @@ class _OtherProfilePageState extends State<OtherProfilePage> {
                                                 postId: data.postId,
                                                 onTap: (){},
                                                 name: data.postContentText!,
-                                                bgImage: data.textBackGround!,
+                                                bgImage: data.textBackGround ?? "0",
                                                 commentCount: data.totalComment.toString(),
                                                 date: data.postedDate,
                                                 likeCount: data.totalLike.toString(),

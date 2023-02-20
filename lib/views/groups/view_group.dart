@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:happiverse/logic/video_audio_call/agora_video_call_cubit.dart';
+import 'package:happiverse/views/chat/call_page.dart';
 import '../../logic/groups/groups_cubit.dart';
 import '../../logic/post_cubit/post_cubit.dart';
 import '../../logic/register/register_cubit.dart';
@@ -39,11 +41,34 @@ class _ViewGroupsState extends State<ViewGroups> {
 
     context.read<GroupsCubit>().fetchFeedsPosts(b.userID!, b.accesToken!,gb.groups[widget.index].groupId);
   }
+
+  makeCall(bool audio,String groupIdf){
+    FirebaseFirestore.instance.collection('groupcall').doc(groupIdf).get().then((value){
+      if(value.exists){
+        showCupertinoDialog(context: context, builder: (context){
+          return CupertinoAlertDialog(
+            title: Text("You can't make call you already in call"),
+            actions: [
+              CupertinoDialogAction(child: Text("Ok"),onPressed: ()=> Navigator.pop(context),)
+            ],
+          );
+        });
+      }else{
+        FirebaseFirestore.instance.collection('groupcall').doc(groupIdf).set({
+          'groupId':groupIdf,
+          'channelId':groupIdf,
+          'callType':audio ? 'Audio':'Video',
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final dF = DateFormat('dd MMM yyyy');
     final tF = DateFormat('hh:mm a');
     final bloc = context.read<GroupsCubit>();
+    final callBloc = context.read<AgoraVideoCallCubit>();
     final authB = context.read<RegisterCubit>();
     return BlocBuilder<GroupsCubit,GroupsState>(
       builder: (context,state) {
@@ -53,9 +78,80 @@ class _ViewGroupsState extends State<ViewGroups> {
               //2
               SliverAppBar(
                 actions: [
-                  IconButton(onPressed: () {
-                    nextScreen(context, GroupSettings(id:state.groups![widget.index].groupId,groupName: state.groups![widget.index].groupName,index: widget.index,));
-                  }, icon: Icon(LineIcons.cog))
+                  CircleAvatar(
+                    backgroundColor: Colors.green,
+                    child: IconButton(onPressed: () {
+                      FirebaseFirestore.instance.collection('groupcall').doc(state.groups![widget.index].groupId).get().then((value){
+                        if(value.exists){
+                          showCupertinoDialog(context: context, builder: (context){
+                            return CupertinoAlertDialog(
+                              title: Text("You can't make call you already in call"),
+                              actions: [
+                                CupertinoDialogAction(child: Text("Ok"),onPressed: ()=> Navigator.pop(context),)
+                              ],
+                            );
+                          });
+                        }else{
+                          FirebaseFirestore.instance.collection('groupcall').doc(state.groups![widget.index].groupId).set({
+                            'groupId':state.groups![widget.index].groupId,
+                            'channelId':state.groups![widget.index].groupId,
+                            'callType':'Audio',
+                          });
+                          callBloc.setCallValue({
+                            'userName':state.groups![widget.index].groupName,
+                            'avatar':"${Utils.baseImageUrl}${state.groups![widget.index].groupImageUrl}",
+                            'seconds': 0,
+                            'callType':'Audio',
+                            'channelId': state.groups![widget.index].groupId,
+                            'time':''
+                          });
+                          nextScreen(context, CallPage(userName: state.groups![widget.index].groupName, avatar: "${Utils.baseImageUrl}${state.groups![widget.index].groupImageUrl}", isAudio: true, channelId: state.groups![widget.index].groupId, seconds: 0));
+                        }
+                      });
+                      // nextScreen(context, GroupSettings(id:state.groups![widget.index].groupId,groupName: state.groups![widget.index].groupName,index: widget.index,));
+                    }, icon: Icon(LineIcons.phone,color: Colors.white,)),
+                  ),
+                  SizedBox(width: 10,),
+                  CircleAvatar(
+                    backgroundColor: Colors.green,
+                    child: IconButton(onPressed: () {
+                      FirebaseFirestore.instance.collection('groupcall').doc(state.groups![widget.index].groupId).get().then((value){
+                        if(value.exists){
+                          showCupertinoDialog(context: context, builder: (context){
+                            return CupertinoAlertDialog(
+                              title: Text("You can't make call you already in call"),
+                              actions: [
+                                CupertinoDialogAction(child: Text("Ok"),onPressed: ()=> Navigator.pop(context),)
+                              ],
+                            );
+                          });
+                        }else{
+                          FirebaseFirestore.instance.collection('groupcall').doc(state.groups![widget.index].groupId).set({
+                            'groupId':state.groups![widget.index].groupId,
+                            'channelId':state.groups![widget.index].groupId,
+                            'callType':'Video',
+                          });
+                          callBloc.setCallValue({
+                            'userName':state.groups![widget.index].groupName,
+                            'avatar':"${Utils.baseImageUrl}${state.groups![widget.index].groupImageUrl}",
+                            'seconds': 0,
+                            'callType':'Video',
+                            'channelId': state.groups![widget.index].groupId,
+                            'time':''
+                          });
+                          nextScreen(context, CallPage(userName: state.groups![widget.index].groupName, avatar: "${Utils.baseImageUrl}${state.groups![widget.index].groupImageUrl}", isAudio: false, channelId: state.groups![widget.index].groupId, seconds: 0));
+                        }
+                      });
+
+                      // nextScreen(context, GroupSettings(id:state.groups![widget.index].groupId,groupName: state.groups![widget.index].groupName,index: widget.index,));
+                    }, icon: Icon(LineIcons.video,color: Colors.white,)),
+                  ),
+                  SizedBox(width: 10,),
+                  CircleAvatar(
+                    child: IconButton(onPressed: () {
+                      nextScreen(context, GroupSettings(id:state.groups![widget.index].groupId,groupName: state.groups![widget.index].groupName,index: widget.index,));
+                    }, icon: Icon(LineIcons.cog)),
+                  ),
                 ],
                 pinned: true,
                 snap: false,
@@ -74,6 +170,44 @@ class _ViewGroupsState extends State<ViewGroups> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text("Privacy Type : ${state.groups![widget.index].groupPrivacy}"),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance.collection('groupcall').doc(state.groups![widget.index].groupId).snapshots(),
+                  builder: (context,AsyncSnapshot<DocumentSnapshot> snapshots){
+                    // print("DAta ${snapshots.data!.data()!['callType']}");
+                    if(snapshots.hasData && snapshots.data!.data() != null){
+                      Map<String, dynamic> data = snapshots.data!.data()! as Map<String, dynamic>;
+                      return ListTile(
+                        onTap: (){
+                          callBloc.setCallValue({
+                            'userName':state.groups![widget.index].groupName,
+                            'avatar':"${Utils.baseImageUrl}${state.groups![widget.index].groupImageUrl}",
+                            'seconds': 0,
+                            'callType': data['callType'],
+                            'channelId': state.groups![widget.index].groupId,
+                            'time':''
+                          });
+                          nextScreen(context, CallPage(userName: state.groups![widget.index].groupName, avatar: "${Utils.baseImageUrl}${state.groups![widget.index].groupImageUrl}", isAudio: data['callType'] == "Audio" ? true:false, channelId: state.groups![widget.index].groupId, seconds: 0));
+                        },
+                        tileColor: Colors.green.withOpacity(0.2),
+                        // contentPadding: EdgeInsets.zero,
+                        title: Text("Group ${data['callType'] == 'Audio' ? 'Audio':'Video'} Call",style: TextStyle(color: Colors.green),),
+                        subtitle: Text("Tap to join/return",style: TextStyle(color: Colors.green),),
+                        trailing: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.green
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: Text("Join Call",style: TextStyle(color: Colors.white),),
+                        ),
+                      );
+                    }else{
+                      return Container();
+                    }
+                  },
                 ),
               ),
               state.groupPosts == null ? SliverToBoxAdapter(child: LoadingPostWidget()):

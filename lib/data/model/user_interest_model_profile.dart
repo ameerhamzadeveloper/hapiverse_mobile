@@ -53,7 +53,7 @@ class UserInterestProfile {
 
   factory UserInterestProfile.fromJson(Map<String, dynamic> json) => UserInterestProfile(
     interestSubCategoryId: json["interestSubCategoryId"],
-    interestCategoryId: json["interestCategoryId"],
+    interestCategoryId: json["interestCategoryId"] ?? "",
     interestSubCategoryTitle: json["interestSubCategoryTitle"],
     isActive: json["isActive"],
     addDate: DateTime.parse(json["addDate"]),

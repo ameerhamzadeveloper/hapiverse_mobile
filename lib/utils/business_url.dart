@@ -15,6 +15,7 @@ const String addJobUrl = "${Utils.baseUrl}business/AddJob";
 // const String addJobUrl = "${Utils.baseUrl}business/FetchMyJob";
 const String fetchMyJobUrl = "${Utils.baseUrl}business/FetchMyJob";
 const String deleteJobUrl = "${Utils.baseUrl}business/DeleteJob";
+const String addCoinUrl = "${Utils.baseUrl}user/AddCoin";
 const String fetchDiscountedProductUrl = "${Utils.baseUrl}business/FetchDiscountedProduct";
 const String addBullitenNoteUrl = "${Utils.baseUrl}business/AddBullitenNote";
 const String editProductUrl = "${Utils.baseUrl}business/EditProduct";

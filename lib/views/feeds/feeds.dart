@@ -253,6 +253,81 @@ class _FeedsPageState extends State<FeedsPage> {
                   }
               },
             ):SliverToBoxAdapter(),
+            // SliverToBoxAdapter(
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(12.0),
+            //     child: Container(
+            //       height: 170,
+            //       width: double.infinity,
+            //       decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(10),
+            //         color: Colors.white
+            //       ),
+            //       child: Column(
+            //         children: [
+            //           Container(
+            //             height: 100,
+            //             width: double.infinity,
+            //             decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(10),
+            //               image: DecorationImage(
+            //                 fit: BoxFit.cover,
+            //                 image: NetworkImage("https://i.insider.com/5150710969beddc11500000b?width=750&format=jpeg&auto=webp")
+            //               )
+            //             ),
+            //           ),
+            //           Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: Row(
+            //               children: [
+            //                 Expanded(child: Text("Ads Title goes here",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)),
+            //                 OutlinedButton(onPressed: (){
+            //                   showDialog(context: context, builder: (context){
+            //                     return AlertDialog(
+            //                       content: Container(
+            //                         height: 170,
+            //                         width: double.infinity,
+            //                         decoration: BoxDecoration(
+            //                             borderRadius: BorderRadius.circular(10),
+            //                             color: Colors.white
+            //                         ),
+            //                         child: Column(
+            //                           children: [
+            //                             Container(
+            //                               height: 100,
+            //                               width: double.infinity,
+            //                               decoration: BoxDecoration(
+            //                                   borderRadius: BorderRadius.circular(10),
+            //                                   image: DecorationImage(
+            //                                       fit: BoxFit.cover,
+            //                                       image: NetworkImage("https://i.insider.com/5150710969beddc11500000b?width=750&format=jpeg&auto=webp")
+            //                                   )
+            //                               ),
+            //                             ),
+            //                             Padding(
+            //                               padding: const EdgeInsets.all(8.0),
+            //                               child: Row(
+            //                                 children: [
+            //                                   Expanded(child: Text("Ads Title goes here",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),)),
+            //                                   OutlinedButton(onPressed: (){
+            //                                   }, child: Text("LEARN MORE"))
+            //                                 ],
+            //                               ),
+            //                             )
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     );
+            //                   });
+            //                 }, child: Text("LEARN MORE"))
+            //               ],
+            //             ),
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
             state.feedsPost == null || state.feedsPost!.isEmpty ? SliverToBoxAdapter(child: LoadingPostWidget()):
             SliverToBoxAdapter(
               child: ListView.builder(

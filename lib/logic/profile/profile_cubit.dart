@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -13,15 +14,18 @@ import 'package:happiverse/utils/user_url.dart';
 import 'package:happiverse/utils/utils.dart';
 import 'package:happiverse/views/business_tools/business_tools.dart';
 import 'package:happiverse/views/profile/profile_more/orders_page.dart';
+import 'package:line_icons/line_icons.dart';
 import '../../data/model/CardDataModel.dart';
 import '../../data/model/business_profile_model.dart';
 import '../../data/model/covid_record_model.dart';
 import '../../data/model/fetch_business_meeting.dart';
 import '../../data/model/fetch_card_model.dart';
+import '../../data/model/fetch_coins_model.dart';
 import '../../data/model/fetch_friend_model.dart';
 import '../../data/model/fetch_image_album.dart';
 import '../../data/model/fetch_job_model.dart';
 import '../../data/model/fetch_photo_album.dart';
+import '../../data/model/fetch_places.dart';
 import '../../data/model/get_all_my_post_model.dart';
 import '../../data/model/interest_select_model.dart';
 import '../../data/model/location_share_to_other.dart';
@@ -364,9 +368,102 @@ class ProfileCubit extends Cubit<ProfileState> {
     http.Response response = await http.post(Uri.parse("https://www.hapiverse.com/ci_api/API/v1/user/FetchUserInterest"),body: {
       'userId':userId
     });
+    print(response.body);
     var data = userInterestModelProfileFromJson(response.body);
     userInterest = data.data;
     emit(state.copyWith(userInterestt: userInterest));
+  }
+
+  List<File> _addEventsImages = [];
+  List<Widget> _addEventsImagesWidget = [];
+
+
+  pickEventsImages(int source)async{
+    if(source == 2){
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          allowMultiple: true
+      );
+      for(var i = 0; i < result!.files.length;i++){
+        _addEventsImages.add(File(result.files[i].path!));
+      }
+      _addEventsImagesWidget.clear();
+      for(var i in _addEventsImages){
+        print(i);
+        _addEventsImagesWidget.add(Container(
+          width: double.infinity,
+          height: double.infinity / 4,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: FileImage(
+                      File(i.path)
+                  )
+              )
+          ),
+        ));
+      }
+      print(_addEventsImagesWidget.length);
+      _addEventsImagesWidget.add(Container(
+        height: double.infinity / 4,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[200]
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(LineIcons.camera),
+              SizedBox(width: 5,),
+              Text("Add Images"),
+            ],
+          ),
+        ),
+      ),);
+      emit(state.copyWith(addPlaceImagess: _addEventsImages,addPlaceImagesWidgett: _addEventsImagesWidget));
+    }else{
+      XFile? image = await ImagePicker().pickImage(source:  ImageSource.camera);
+      _addEventsImages.add(File(image!.path));
+      _addEventsImagesWidget.clear();
+      for(var i in _addEventsImages){
+        print(i);
+        _addEventsImagesWidget.add(Container(
+          width: double.infinity,
+          height: double.infinity / 4,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: FileImage(
+                      File(i.path)
+                  )
+              )
+          ),
+        ));
+      }
+      print(_addEventsImagesWidget.length);
+      _addEventsImagesWidget.add(Container(
+        height: double.infinity / 4,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[200]
+        ),
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(LineIcons.camera),
+              SizedBox(width: 5,),
+              Text("Add Images"),
+            ],
+          ),
+        ),
+      ),);
+      emit(state.copyWith(addPlaceImagess: _addEventsImages,addPlaceImagesWidgett: _addEventsImagesWidget));
+    }
+
   }
 
   selectUnselectInterests(int i){
@@ -1136,11 +1233,52 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   fetchFavMusic(String userId,String token,){
-    repository.callPostApiCI({'userId':userId,'token':token},addFavMusicUrl).then((value) {
-      print(value.body);
+    repository.callPostApiCI({'userId':userId,'token':token},fetchFavMusicUrl).then((value) {
+      print("fetch music Fav${value.body} $userId");
       var data = musicModelFromJson(value.body);
       emit(state.copyWith(favMusicc: data.tracks));
     });
   }
+
+
+
+  addPlace(String userId,String token,String name,String address)async{
+    var request =  http.MultipartRequest('POST',Uri.parse(addPlaceUrl));
+    request.fields['placeName'] = name;
+    request.fields['address'] = address;
+    request.fields['longitude'] = "";
+    request.fields['latitude'] = "";
+    request.fields['userId'] = userId;
+    request.headers['userId'] = userId;
+    request.headers['token'] = token;
+
+    if(state.addPlaceImages != null){
+      for(var i = 0; i < state.addPlaceImages!.length;i++){
+        var imagee = await http.MultipartFile.fromPath('imageUrl[]', state.addPlaceImages![i].path);
+        request.files.add(imagee);
+      }
+    }
+    http.Response response = await http.Response.fromStream(await request.send());
+    fetchPlace(userId, token);
+    print(response.body);
+  }
+
+  fetchPlace(String userId,String token){
+    repository.callPostApiCI({'userId':userId,'token':token}, fetchPlacesUrl).then((value){
+      print(value.body);
+      var data = fetchPlacesFromJson(value.body);
+      emit(state.copyWith(placess: data.data));
+    });
+  }
+
+  fetchCoins(String userId,String token){
+    repository.callPostApiCI({'userId':userId,'token':token}, fetchCoinUrl).then((value){
+      print(value.body);
+      var data = coinsModelFromJson(value.body);
+      emit(state.copyWith(usersCoinss: data));
+    });
+  }
+
+
 
 }

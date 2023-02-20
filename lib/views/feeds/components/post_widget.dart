@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:speech_bubble/speech_bubble.dart';
 import '../../../data/model/feeds_post_model.dart';
 import '../../../logic/feeds/feeds_cubit.dart';
 import '../../../logic/register/register_cubit.dart';
@@ -551,51 +550,51 @@ class _PostWidgetState extends State<PostWidget> {
                           ),
                         ),
                       ),
-                       Align(
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          onTap:(){
-                            print(widget.profilePic);
-                            showModalBottomSheet(context: context, builder: (context){
-                              return Container(
-                                color: Colors.white,
-                                height: getHeight(context) / 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(height: 10,),
-                                      Row(
-                                        children: [
-                                          Text("Face Detected Found"),
-                                        ],
-                                      ),
-                                      Divider(),
-                                      ListTile(
-                                        title: Text(widget.profileName),
-                                        leading: CircleAvatar(
-                                          backgroundImage: NetworkImage(widget.profilePic),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              );
-                            });
-                          },
-                          child: SpeechBubble(
-                            color: kUniversalColor,
-                            nipLocation: NipLocation.LEFT,
-                            child: Text(
-                              "${widget.profileName}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      //  Align(
+                      //   alignment: Alignment.centerRight,
+                      //   child: InkWell(
+                      //     onTap:(){
+                      //       print(widget.profilePic);
+                      //       showModalBottomSheet(context: context, builder: (context){
+                      //         return Container(
+                      //           color: Colors.white,
+                      //           height: getHeight(context) / 2,
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.all(12.0),
+                      //             child: Column(
+                      //               children: [
+                      //                 SizedBox(height: 10,),
+                      //                 Row(
+                      //                   children: [
+                      //                     Text("Face Detected Found"),
+                      //                   ],
+                      //                 ),
+                      //                 Divider(),
+                      //                 ListTile(
+                      //                   title: Text(widget.profileName),
+                      //                   leading: CircleAvatar(
+                      //                     backgroundImage: NetworkImage(widget.profilePic),
+                      //                   ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           )
+                      //         );
+                      //       });
+                      //     },
+                      //     child: SpeechBubble(
+                      //       color: kUniversalColor,
+                      //       nipLocation: NipLocation.LEFT,
+                      //       child: Text(
+                      //         "${widget.profileName}",
+                      //         style: TextStyle(
+                      //           color: Colors.white,
+                      //           fontSize: 18.0,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   );
                 }).toList(),

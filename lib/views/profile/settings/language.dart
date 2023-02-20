@@ -40,6 +40,18 @@ class _LanguageSelectionState extends State<LanguageSelection> {
         final local = Locale('es', 'ES');
         MyApp.setLocale(context, local);
         break;
+      case 'ru':
+        final local = Locale('ru', 'RU');
+        MyApp.setLocale(context, local);
+        break;
+      case 'fr':
+        final local = Locale('fr', 'FR');
+        MyApp.setLocale(context, local);
+        break;
+      case 'tl':
+        final local = Locale('tl', 'TL');
+        MyApp.setLocale(context, local);
+        break;
     }
   }
 
@@ -49,7 +61,10 @@ class _LanguageSelectionState extends State<LanguageSelection> {
     LanguageClass(languageName: "عربي", langugeSubName: "Arabic",isSelected: false),
     LanguageClass(languageName: "اردو", langugeSubName: "Urdu (PK)",isSelected: false),
     LanguageClass(languageName: "हिन्दी", langugeSubName: "Hindi (IND)",isSelected: false),
+    LanguageClass(languageName: "Spanish", langugeSubName: "Spanish",isSelected: false),
+    LanguageClass(languageName: "Russian", langugeSubName: "Russian",isSelected: false),
     LanguageClass(languageName: "Français", langugeSubName: "French",isSelected: false),
+    LanguageClass(languageName: "Tagalog", langugeSubName: "Tagalog",isSelected: false),
   ];
 
   int? currentLanguage;
@@ -187,6 +202,12 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                                     changeLanguage('hi');
                                   }else if(i == 5){
                                     changeLanguage('es');
+                                  }else if(i == 6){
+                                    changeLanguage('ru');
+                                  }else if(i == 7){
+                                    changeLanguage('fr');
+                                  }else if(i == 8){
+                                    changeLanguage('tl');
                                   }
                                 },
                                 child: Row(

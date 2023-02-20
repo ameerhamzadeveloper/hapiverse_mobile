@@ -51,12 +51,12 @@ class _MusicListPageState extends State<MusicListPage> with SingleTickerProvider
       appBar: AppBar(
         title: Text("Music"),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.search))
+          // IconButton(onPressed: (){}, icon: Icon(Icons.search))
         ],
       ),
       body:Stack(
         children: [
-          state.musicTrack == null ? CupertinoActivityIndicator():Align(
+          state.musicTrack == null ? Center(child: CupertinoActivityIndicator()):Align(
             alignment: Alignment.topCenter,
             child: SingleChildScrollView(
               child: Column(
@@ -91,7 +91,7 @@ class _MusicListPageState extends State<MusicListPage> with SingleTickerProvider
                         subtitle: Text(m.artists![0].name!),
                         trailing: IconButton(
                           onPressed: (){
-                            bloc.addFavMusic(auth.userID!, auth.accesToken!, m.id ?? "");
+                            bloc.addFavMusic(auth.userID!, auth.accesToken!, m.artists![0].id ?? "");
                           },
                           icon: Icon(LineIcons.heart),
                         ),

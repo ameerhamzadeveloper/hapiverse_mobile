@@ -595,12 +595,14 @@ class ProfileDataWidet extends StatelessWidget {
                                   child:
                                   SizedBox(
                                     height: 40,
-                                    width: 40,
+                                    width: 80,
                                     child: Card(
                                         shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(100)
                                         ),
-                                        child: Icon(Icons.keyboard_arrow_down_sharp)),
+                                        child: Center(child: Text("More Info",style: TextStyle(fontSize: 11),))
+                                        // Icon(Icons.keyboard_arrow_down_sharp),
+                                    ),
                                   ),
                                 )
                               ],

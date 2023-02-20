@@ -89,7 +89,16 @@ class _MyAppState extends State<MyApp> {
       } else if (cLan == 5) {
         const local = Locale('es', 'ES');
         setLocale(local);
-      } else {
+      }else if (cLan == 6) {
+        const local = Locale('ru', 'RU');
+        setLocale(local);
+      }else if (cLan == 7) {
+        const local = Locale('fr', 'FR');
+        setLocale(local);
+      } else if (cLan == 8) {
+        const local = Locale('tl', 'TL');
+        setLocale(local);
+      }else {
         setLocale(loc);
       }
     }
@@ -346,6 +355,9 @@ class _MyAppState extends State<MyApp> {
           Locale("hi", "IN"),
           Locale("ur", "PK"),
           Locale("es", "ES"),
+          Locale("fr", "FR"),
+          Locale("tl", "TL"),
+          Locale("ru", "RU"),
         ],
         locale: _locale,
         // navigatorKey: navigatorKey,

@@ -45,7 +45,7 @@ class _OtherLocationTracingState extends State<OtherLocationTracing> {
           children: [
             Text("Other Users who have allowed you to track their locations"),
             SizedBox(height: 20,),
-            state.locationshareToMe == null ? Center(child: CircularProgressIndicator(),) : state.locationshareToMe!.isEmpty ? Center(child: Text("No Location Tracing"),):
+            state.locationshareToMe == null ? Center(child: CircularProgressIndicator(),) : state.locationshareToMe!.isEmpty ? Center(child: Text("No Location Tracking"),):
             ListView.builder(
               shrinkWrap: true,
               itemCount: state.locationshareToMe!.length,

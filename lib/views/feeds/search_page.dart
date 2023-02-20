@@ -134,50 +134,101 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               ),
             ),
             SizedBox(height: 10,),
-            Container(
-              height: 35,
-              // decoration: BoxDecoration(
-              //   color: Colors.grey[300],
-              //   borderRadius: BorderRadius.circular(
-              //     25.0,
-              //   ),
-              // ),
-              child: TabBar(
-                controller: _tabController,
-                // give the indicator a decoration (color and border radius)
-                indicator: const BoxDecoration(
-                  // borderRadius: BorderRadius.circular(
-                  //   25.0,
-                  // ),
-                  border: Border(bottom: BorderSide(color: kUniversalColor)),
-                  // color: kUniversalColor,
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 35,
+                    child: TabBar(
+                      controller: _tabController,
+                      // give the indicator a decoration (color and border radius)
+                      indicator: const BoxDecoration(
+                        // borderRadius: BorderRadius.circular(
+                        //   25.0,
+                        // ),
+                        border: Border(bottom: BorderSide(color: kUniversalColor)),
+                        // color: kUniversalColor,
+                      ),
+                      labelColor: kUniversalColor,
+                      unselectedLabelColor: Colors.black,
+                      onTap: (i) {
+                        setState(() {
+                          _tabController.index = i;
+                        });
+                        if(i == 1){
+                          bloc.searchBusiness(authB.userID!,authB.accesToken!);
+                        }else if(i == 0){
+                          bloc.searchUser(authB.userID!,authB.accesToken!);
+                        }
+                      },
+                      tabs: const [
+                        // first tab [you can add an icon using the icon property]
+                        Tab(
+                          text: 'Users',
+                        ),
+                        // second tab [you can add an icon using the icon property]
+                        Tab(
+                          text: 'Business',
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                labelColor: kUniversalColor,
-                unselectedLabelColor: Colors.black,
-                onTap: (i) {
-                  setState(() {
-                    _tabController.index = i;
-                  });
-                  if(i == 1){
-                    bloc.searchBusiness(authB.userID!,authB.accesToken!);
-                  }else if(i == 0){
-                    bloc.searchUser(authB.userID!,authB.accesToken!);
-                  }
-                },
-                tabs: const [
-                  // first tab [you can add an icon using the icon property]
-                  Tab(
-                    text: 'Peoples',
+                InkWell(
+                  onTap: (){
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            content: SizedBox(
+                              height: 120,
+                              child: Column(
+                                children: [
+                                  MaterialButton(
+                                    onPressed: (){
+                                      bloc.searchImage(1,authB.userID!,authB.accesToken!,context);
+                                      // Navigator.pop(context);
+                                    },
+                                    child: Row(
+                                      children: const [
+                                        Icon(LineIcons.camera),
+                                        SizedBox(width: 10,),
+                                        Text("Camera")
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      bloc.searchImage(2,authB.userID!,authB.accesToken!,context);
+                                      // Navigator.pop(context);
+                                    },
+                                    child: Row(
+                                      children: const [
+                                        Icon(LineIcons.image),
+                                        SizedBox(width: 10,),
+                                        Text("Gallary")
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(CupertinoIcons.photo),
+                      Text("Image Search")
+                    ],
                   ),
-                  // second tab [you can add an icon using the icon property]
-                  Tab(
-                    text: 'Business',
-                  ),
-                ],
-              ),
+                )
+              ],
             ),
                 _tabController.index == 0 ? Expanded(
-                  child: state.isSearching ? Center(child: CupertinoActivityIndicator(),):ListView.builder(
+                  child: state.isSearching ? Center(child: CupertinoActivityIndicator(),):state.searchedUsersList == null ? Center(child: CupertinoActivityIndicator(),):state.searchedUsersList!.isEmpty ? Center(child: Text("No Search Found"),):ListView.builder(
                     shrinkWrap: true,
                     itemBuilder: (ctx,i){
                       var d = state.searchedUsersList![i];
@@ -206,7 +257,8 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     },
                     itemCount: state.searchedUsersList == null ? 0:state.searchedUsersList!.length,
                   ),
-                ):Expanded(
+                ):
+                Expanded(
                   child: state.isSearching || state.searchedBusiness == null ? Center(child: CupertinoActivityIndicator(),):state.searchedBusiness!.isEmpty ? Center(child: Text("No Result Found"),):ListView.builder(
                     shrinkWrap: true,
                     itemBuilder: (ctx,i){
@@ -231,10 +283,6 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                           child: Column(
                             children: [
                               ListTile(
-                                // leading: CircleAvatar(
-                                //   backgroundColor: Colors.grey[200],
-                                //   backgroundImage: NetworkImage("${Utils.baseImageUrl}${d.logoImageUrl}"),
-                                // ),
                                 title: Text(d.businessName!),
                                 subtitle: Text(d.businessType ?? "Unknown"),
                                 trailing: TextButton(
@@ -256,7 +304,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(d.address!,style: TextStyle(color: Colors.grey),),
+                                    child: Text(d.address!,style: const TextStyle(color: Colors.grey),),
                                   ),
                                 ],
                               ),
@@ -268,9 +316,9 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                         ),
                       );
                     },
-                    itemCount: state.searchedBusiness == null ? 0:state.searchedBusiness!.length,
+                    itemCount: state.searchedBusiness == null ? 0 : state.searchedBusiness!.length,
                   ),
-                )
+              )
           ],
         ),
       ),

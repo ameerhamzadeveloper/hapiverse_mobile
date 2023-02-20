@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:happiverse/data/model/story_id.dart';
 import 'package:happiverse/utils/user_url.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../data/model/feeds_post_model.dart';
 import '../../data/model/fetch_my_story_model.dart';
 import '../../data/model/post_comment_model.dart';
@@ -26,6 +27,9 @@ import 'package:translator/translator.dart';
 import '../../data/model/search_user_model.dart';
 import '../../data/model/story_api_model.dart';
 import '../../data/model/story_model.dart';
+import 'package:http/http.dart' as http;
+
+import '../../views/feeds/image_search.dart';
 part 'feeds_state.dart';
 
 class FeedsCubit extends Cubit<FeedsState> {
@@ -459,6 +463,28 @@ class FeedsCubit extends Cubit<FeedsState> {
         print("ad response ${value.body}");
       });
     });
+
+  }
+
+  searchImage(int source,String userId,String token,BuildContext context)async {
+    XFile? image =await ImagePicker().pickImage(source:source == 1 ? ImageSource.camera:ImageSource.gallery);
+    emit(state.copyWith(searchedUsersListt: [], isSearchingg: true));
+    if(image != null){
+      nextScreen(context, ImageSearchUsers());
+      var request =  http.MultipartRequest('POST',Uri.parse("https://www.hapiverse.com/ci_api/face/matchingface.php"));
+      request.fields['token'] = token;
+      request.fields['userId'] = userId;
+      request.headers['userId'] = userId;
+      request.headers['token'] = token;
+      var imagee = await http.MultipartFile.fromPath('image', image.path);
+      request.files.add(imagee);
+      print(request.files[0]);
+      print(request.fields);
+      http.Response response = await http.Response.fromStream(await request.send());
+      print(response.body);
+      var data = searchUserModelFromJson(response.body);
+      emit(state.copyWith(searchedUsersListt: data.data, isSearchingg: false));
+    }
 
   }
 
