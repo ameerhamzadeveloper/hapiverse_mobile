@@ -7,8 +7,8 @@ import 'package:http/http.dart';
 class PlaceApiProvider {
   final client = Client();
 
-  static final String androidKey = 'AIzaSyBVY5x_t23MvVUr-d3sdb28yuBPXofAF5A';
-  static final String iosKey = 'AIzaSyBVY5x_t23MvVUr-d3sdb28yuBPXofAF5A';
+  static final String androidKey = '';
+  static final String iosKey = '';
   final apiKey = Platform.isAndroid ? androidKey : iosKey;
 
   Future<List<Suggestion>> fetchSuggestions(
